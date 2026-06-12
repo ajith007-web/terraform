@@ -2,32 +2,6 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-
-resource "tls_private_key" "RSA_example" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "RSA_example" {
-  key_name   = "terraform-key"
-  public_key = tls_private_key.RSA_example.public_key_openssh
-}
-
-resource "local_file" "private_key" {
-  content  = tls_private_key.RSA_example.private_key_pem
-  filename = "${path.module}/private_key.pem"
-}
-
-resource "aws_instance" "RSA_example" {
-  ami           = var.ec2_ami
-  instance_type = var.instance_type
-  key_name      = aws_key_pair.RSA_example.key_name
-  tags = {
-    Name = var.instance_name
-  }
-}
-
-
 resource "aws_s3_bucket" "terraform_bucket" {
   bucket_prefix = "terraform-bucket"
   lifecycle {
